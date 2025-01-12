@@ -1,15 +1,56 @@
+import org.jetbrains.annotations.NotNull;
+
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
+
+    public int searchForNormalCustomer(String email, String password, @NotNull ArrayList<normalCustomer> normalCustomers) {
+        for (int i = 0; i < normalCustomers.size(); i++) {
+            if (normalCustomers.get(i).getEmail().equals(email) && normalCustomers.get(i).getPassword().equals(password)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    public int searchForPremiumCustomer(String email, String password, @NotNull ArrayList<Premium_Customer> premiumCustomers) {
+        for (int i = 0; i < premiumCustomers.size(); i++) {
+            if (premiumCustomers.get(i).getEmail().equals(email) && premiumCustomers.get(i).getPassword().equals(password)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int searchForSeller(String email, String password, @NotNull ArrayList<Saller> sellersList) {
+        for (int i = 0; i < sellersList.size(); i++) {
+            if (sellersList.get(i).getEmail().equals(email) && sellersList.get(i).getPassword().equals(password)) {
+                return i;
+            }
+        }
+        return -1;
+    }
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean begin = true;
-
+        Orders_mangments orders_mangments = new Orders_mangments();
         ArrayList<normalCustomer> normalCustomers = new ArrayList<>();
         ArrayList<Premium_Customer> premiumCustomers = new ArrayList<>();
         ArrayList<Saller> sellersList = new ArrayList<>();
+        // Generate some products
+        for (int i = 0; i < 10; i++) {
+            Products product = new Products();
+            product.setProductName("product" + (i + 1));
+            product.setProductDescription("product" + (i + 1) + " description");
+            product.setProductPrice(10 + i * 5);
+            product.setProductQuantity(10 + i * 2);
+            orders_mangments.allProducts.add(product);
+        }
+
+
+
+
 
         while (begin) {
             System.out.println("Enter 1 to sign in:");
@@ -32,7 +73,62 @@ public class Main {
                             System.out.println("Enter your password:");
                             String password = scanner.nextLine();
                             String loginResult = SuperUser.checkUser(email, password);
-                            System.out.println(loginResult);
+                            int index = -1;
+                            if(new Main().searchForNormalCustomer(email, password, normalCustomers) != -1){
+                                index = new Main().searchForNormalCustomer(email, password, normalCustomers);
+                                System.out.println("Hello " + normalCustomers.get(index).getFullName() + " welcome back!");
+                                System.out.println("Chose one of the following options: ");
+                                System.out.println("1 - to show all products");
+                                System.out.println("2 - to view order details");
+                                System.out.println("3 - to add a product to the cart");
+                                System.out.println("4 - to remove a product from the cart");
+                                System.out.println("5 - to view the cart");
+                                System.out.println("6 - to checkout");
+                                int choice3 = scanner.nextInt();
+                                scanner.nextLine();
+                                switch (choice3) {
+                                    case 1:
+                                        orders_mangments.showAllProducts();
+                                        break;
+                                    case 2:
+                                        System.out.println("Enter the product ID: ");
+                                        int productID = scanner.nextInt();
+                                        scanner.nextLine();
+                                        orders_mangments.showProductDetails(orders_mangments.allProducts.get(productID));
+                                        break;
+                                    case 3:
+                                        System.out.println("Enter the product ID: ");
+                                        productID = scanner.nextInt();
+                                        scanner.nextLine();
+                                        System.out.println("Enter the quantity: ");
+                                        int quantity = scanner.nextInt();
+                                        scanner.nextLine();
+                                        normalCustomers.get(index).addToCart(orders_mangments.allProducts.get(productID), quantity);
+                                        break;
+                                    case 4:
+                                        System.out.println("Enter the product ID: ");
+                                        productID = scanner.nextInt();
+                                        scanner.nextLine();
+                                        normalCustomers.get(index).removeFromCart(orders_mangments.allProducts.get(productID));
+                                        break;
+                                    case 5:
+                                        normalCustomers.get(index).viewCart();
+                                        break;
+                                    case 6:
+                                        orders_mangments.addTheMoneyToSellerAccountAndCheckOut(orders_mangments.allProducts.get(index), normalCustomers.get(index));
+                                        break;
+                                    default:
+                                        System.out.println("Invalid choice. Please try again.");
+                                        break;
+                                }
+                            }
+                            else if(new Main().searchForPremiumCustomer(email, password, premiumCustomers) != -1){
+                                index = new Main().searchForPremiumCustomer(email, password, premiumCustomers);
+                                System.out.println("Hello " + premiumCustomers.get(index).getFullName() + " welcome back!");
+                            }
+                            else{
+                                System.out.println("You are not a registered customer.");
+                            }
                             break;
 
                         case 2:
@@ -52,7 +148,8 @@ public class Main {
                                 System.out.println("Please enter your password: ");
                                 password = scanner.nextLine();
                                 loginResult = SuperUser.checkUser(email, password);
-                                System.out.println(loginResult);
+                                index = new Main().searchForSeller(email, password, sellersList);
+                                System.out.println("Welcome back! Your full name is: " + sellersList.get(index).getFullName());
                             }
                             break;
 
@@ -63,7 +160,7 @@ public class Main {
                     break;
 
                 case 2:
-                    System.out.println("Enter 1 to sign up as a premium user:");
+                    System.out.println("Enter 1 to sign up as a premium user and this service will coast you 20$ :");
                     System.out.println("Enter 2 to sign up as a normal user:");
                     System.out.println("Enter 3 to sign up as a seller:");
                     int choice2 = scanner.nextInt();
@@ -119,6 +216,6 @@ public class Main {
             }
         }
 
-        scanner.close();
+       scanner.close();
     }
 }

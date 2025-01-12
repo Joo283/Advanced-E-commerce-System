@@ -150,4 +150,12 @@ public class SuperUser {
         }
         return "Invalid email or password";
     }
+    public static void removeUser(String email, String password){
+        Pair<String, String> userPair = new Pair<>(email, password);
+        if (allUsers.containsKey(userPair)){
+            allUsers.remove(userPair);
+        }
+        else
+            return;
+    }
 }
