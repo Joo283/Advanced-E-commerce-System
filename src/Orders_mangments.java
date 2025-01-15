@@ -39,11 +39,19 @@ public class Orders_mangments {
 
     }
     public void showAllProducts(){
+        if (allProducts.isEmpty()){
+            System.out.println("No products found");
+            return;
+        }
         for (Products product : allProducts){
             System.out.println(product.getProductName() + " and the product ID id : " + product.getProductID());
         }
     }
     public void showProductDetails(@NotNull Products product){
+        if (!allProducts.contains(product)){
+            System.out.println("Product not found");
+            return;
+        }
 
         System.out.println("Product Name: " + product.getProductName());
         System.out.println("shop Name: " + product.getShopName());
@@ -61,8 +69,28 @@ public class Orders_mangments {
         }
     }
     public void addTheMoneyToSellerAccountAndCheckOut(@NotNull Products product, @NotNull normalCustomer customer){
-       product.getSaller().addBalance(customer.checkout());
+       if(product.getProductQuantity() == 0 || !allProducts.contains(product)){
+           System.out.println("The product is out of stock");
+           return;
+         }
+        product.getSaller().addBalance(customer.checkout());
     }
+    public void addTheMoneyToSellerAccountAndCheckOutPremium(@NotNull Products product, @NotNull Premium_Customer customer){
+        if(product.getProductQuantity() == 0 || !allProducts.contains(product)){
+            System.out.println("The product is out of stock");
+            return;
+        }
+        product.getSaller().addBalance(customer.checkout());
+    }
+    public void removeProductQuantity(@NotNull Products product, int quantity){
+        if (product.getProductQuantity() < quantity){
+            System.out.println("The quantity you entered is not available");
+            return;
+        }
+        product.setProductQuantity(product.getProductQuantity() - quantity);
+        System.out.println("The quantity has been updated successfully");
+    }
+
 
 
 

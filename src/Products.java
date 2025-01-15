@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 
 public class Products {
-    private static ArrayList<String> productId = new ArrayList<>();
     private String productName;
     private String productDescription;
     private double productPrice;
@@ -11,7 +10,7 @@ public class Products {
     private String shopName;
     private static ArrayList<String> reviews = new ArrayList<>();
     Saller saller = new Saller();
-    static int ID = 0;
+    private static int ID = 0;
 
     public Products() {
     }

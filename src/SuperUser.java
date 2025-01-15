@@ -118,7 +118,7 @@ public class SuperUser {
         System.out.println("Postal Code: " + this.postalCode);
     }
 
-    public String validateUser(String email, String password, String fullName) {
+    public String validateUser(String email, String password) {
         Pair<String, String> userPair = new Pair<>(email, password);
 
 
@@ -133,12 +133,14 @@ public class SuperUser {
         if (!checkValidPassword(password)) {
             return "Invalid password";
         }
-
+        return "User added successfully";
+    }
+    public void confirmAddingUser(String email, String password, String fullName) {
+        Pair<String, String> userPair = new Pair<>(email, password);
         allUsers.put(userPair, fullName);
         this.email = email;
         this.password = password;
         this.fullName = fullName;
-        return "User added successfully";
     }
 
     @NotNull
@@ -150,12 +152,5 @@ public class SuperUser {
         }
         return "Invalid email or password";
     }
-    public static void removeUser(String email, String password){
-        Pair<String, String> userPair = new Pair<>(email, password);
-        if (allUsers.containsKey(userPair)){
-            allUsers.remove(userPair);
-        }
-        else
-            return;
-    }
+
 }

@@ -1,110 +1,101 @@
-//this class is a subclass of SuperUser and it is used to create a new user account for a normal customer
-//it has a method called setNewUser that takes the user input and validates it and then stores it in the allUsers arraylist
-//this class is responsible for creating a new user account for a normal customer
-
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.PrimitiveIterator;
 import java.util.Scanner;
 
 public class normalCustomer extends SuperUser {
     Scanner scanner = new Scanner(System.in);
-    private ArrayList<Products> cart = new ArrayList<>();
-    private String paymentMethod;
+    private final ArrayList<Products> cart = new ArrayList<>();
+    private static final ArrayList<String> allPaymentCards= new ArrayList<>();
     private double money;
-    public  void setNewUser() {
-        System.out.println("Enter your email");
-        String email = scanner.nextLine();
-        System.out.println("Enter your password");
-        String password = scanner.nextLine();
-        System.out.println("Enter your full name");
-        String fullName = scanner.nextLine();
-        setFullName(fullName);
-        String check = validateUser(email,password,getFullName());
+
+    public void setNewUser() {
         int tryies = 0;
-        if (tryies >= 3){
-            System.out.println("You have exceeded the number of tries");
-            return;
-        }
-        while (check.startsWith("User already exists") && tryies < 3){
-            System.out.println(check + " please enter a new email");
-            System.out.println("Enter your email");
+
+
+        System.out.print("Enter your email ; ");
+        String email = scanner.nextLine();
+        System.out.print("Enter your password : ");
+        String password = scanner.nextLine();
+        String check = validateUser(email, password);
+
+        while (!check.startsWith("User added successfully") && tryies < 3) {
+            System.out.println(check);
+
+            if (check.startsWith("User already exists")) {
+                System.out.println("Please enter a new email");
+            } else if (check.startsWith("Invalid email")) {
+                System.out.println("Please enter a valid email");
+            } else if (check.startsWith("Invalid password")) {
+                System.out.println("Please enter a valid password");
+            }
+
+            System.out.print("Enter your email : ");
             email = scanner.nextLine();
-            System.out.println("Enter your password");
+            System.out.print("Enter your password : ");
             password = scanner.nextLine();
-            System.out.println("Enter your full name");
-            fullName = scanner.nextLine();
-            check = validateUser(email,password,fullName);
+            check = validateUser(email, password);
             tryies++;
         }
-        while (check.startsWith("Invalid email") && tryies < 3){
-            System.out.println(check + " please enter a valid email");
-            System.out.println("Enter your email");
-            email = scanner.nextLine();
-            System.out.println("Enter your password");
-            password = scanner.nextLine();
-            System.out.println("Enter your full name");
-            fullName = scanner.nextLine();
-            check = validateUser(email,password,fullName);
-            tryies++;
-        }
-        while (check.startsWith("Invalid password") && tryies < 3){
-            System.out.println(check + " please enter a valid password");
-            System.out.println("Enter your email");
-            email = scanner.nextLine();
-            System.out.println("Enter your password");
-            password = scanner.nextLine();
-            System.out.println("Enter your full name");
-            fullName = scanner.nextLine();
-            check = validateUser(email,password,fullName);
-            tryies++;
-        } if (check.startsWith("User added successfully")) {
-            System.out.println(check + " countinue to enter your remaining information");
-            System.out.println("Enter your username");
+
+        if (check.startsWith("User added successfully")) {
+            System.out.print("Enter your full name : ");
+            String fullName = scanner.nextLine();
+            setFullName(fullName);
+            confirmAddingUser(email, password, fullName);
+            System.out.println(check + " Continue to enter your remaining information");
+
+            System.out.print("Enter your username : ");
             String username = scanner.nextLine();
             setUsername(username);
 
-            System.out.println("Enter your phone number");
-            String phoneNumber = scanner.nextLine();
-            while (!setPhoneNumber(phoneNumber) && tryies < 3) {
-                phoneNumber = scanner.nextLine();
-                tryies++;
-            }
-            System.out.println("Enter your address");
+            setPhoneNumberWithRetries();
+
+            System.out.print("Enter your address : ");
             String address = scanner.nextLine();
             setAddress(address);
-            System.out.println("Enter your city");
+
+            System.out.print("Enter your city : ");
             String city = scanner.nextLine();
             setCity(city);
-            System.out.println("Enter your postal code");
+
+            System.out.print("Enter your postal code : ");
             int postalCode = scanner.nextInt();
             setPostalCode(postalCode);
-            System.out.println("Enter your Payment information");
+
             setPaymentMethod();
             setMoney();
+        } else {
+            System.out.print("You have exceeded the maximum number of attempts. Please try again later.");
         }
-        else{
-            System.out.println("you have exceeded the number of tries please try again later");
+    }
 
+    private void setPhoneNumberWithRetries() {
+        int tryies = 0;
+        System.out.print("Enter your phone number : ");
+        String phoneNumber = scanner.nextLine();
+
+        while (!setPhoneNumber(phoneNumber) && tryies < 3) {
+            System.out.print("Invalid phone number. Please try again : ");
+            phoneNumber = scanner.nextLine();
+            tryies++;
         }
 
-
+        if (tryies >= 3) {
+            System.out.print("Failed to set phone number after " + 3 + " attempts");
+        }
     }
 
     public void setPaymentMethod() {
-        System.out.println("Please enter your card Number : ");
+        System.out.print("Please enter your card Number : ");
         while (!setPaymentMethod(scanner.nextLine())) {
-            System.out.println("Please enter your card Number : ");
+            System.out.print("Please enter your card Number : ");
         }
-
     }
 
     public boolean setPaymentMethod(@NotNull String paymentMethod) {
-        if (paymentMethod.length() == 16) {
-            this.paymentMethod = paymentMethod;
+        if (paymentMethod.length() == 16 && paymentMethod.matches("[0-9]+") && !allPaymentCards.contains(paymentMethod)) {
+            allPaymentCards.add(paymentMethod);
             return true;
         } else {
             System.out.println("Invalid payment method please enter a 16 digit number");
@@ -113,27 +104,41 @@ public class normalCustomer extends SuperUser {
     }
 
     public void setMoney() {
-        System.out.println("Please enter your balance : ");
-        double money = scanner.nextDouble();
-        this.money = money;
+        System.out.print("Please enter your balance : ");
+        this.money = scanner.nextDouble();
     }
 
-    public void addToCart(Products product , int quantity) {
+    public void addToCart(@NotNull Products product, int quantity) {
+        if (product.getProductQuantity() < quantity) {
+            System.out.println("The quantity you entered is not available");
+            return;
+        }
         for (int i = 0; i < quantity; i++) {
             cart.add(product);
         }
+        System.out.println("Added to cart: " + product.getProductName());
     }
 
     public void removeFromCart(Products product) {
+        if(!cart.contains(product)){
+            System.out.println("Product not found in cart");
+            return;
+        }
         cart.remove(product);
+        System.out.println("Removed from cart 1 of : " + product.getProductName());
     }
 
     public void viewCart() {
+        if (cart.isEmpty()) {
+            System.out.println("Cart is empty");
+            return;
+        }
         for (Products product : cart) {
             System.out.println(product.getProductName());
         }
         System.out.println("Total price: " + calculateTotal());
     }
+
     private double calculateTotal() {
         double total = 0;
         for (Products product : cart) {
@@ -143,21 +148,25 @@ public class normalCustomer extends SuperUser {
     }
 
     public double checkout() {
-        double total = 0;
-        for (Products product : cart) {
-            total += product.getProductPrice();
-        }
+        double total = calculateTotal();
         if (total > money) {
             System.out.println("Insufficient funds");
         } else {
             money -= total;
             System.out.println("Payment successful your remaining balance is " + money);
+            cart.clear();
+            System.out.println("the products will be delivered to you within 3 days at this address : " + getAddress());
+            System.out.println("Thank you for shopping with us");
+
         }
         return total;
+    }
+
+    public ArrayList<Products> getCart() {
+        return cart;
     }
 
     public void setReview(Products product, String review) {
         Products.setReviews(review);
     }
-
 }
