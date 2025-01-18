@@ -118,7 +118,7 @@ public class Main {
                                         System.out.print("Enter the product ID: ");
                                         int productID = scanner.nextInt();
                                         scanner.nextLine();
-                                        if(orders_mangments.allProducts.get(productID) == null){
+                                        if(productID >= orders_mangments.allProducts.size()){
                                             System.out.println("Product not found.");
                                             break;
                                         }
@@ -128,14 +128,22 @@ public class Main {
                                     case 3:
                                         System.out.print("Enter the product ID: ");
                                         productID = scanner.nextInt();
+                                        if (productID >= orders_mangments.allProducts.size()){
+                                            System.out.println("Product not found.");
+                                            break;
+                                        }
                                         System.out.print("Enter the quantity: ");
-                                         quantity = scanner.nextInt();
+                                        quantity = scanner.nextInt();
                                         scanner.nextLine();
                                         normalCustomers.get(index).addToCart(orders_mangments.allProducts.get(productID), quantity);
                                         break;
                                     case 4:
                                         System.out.println("Enter the product ID: ");
                                         productID = scanner.nextInt();
+                                        if (productID >= orders_mangments.allProducts.size()){
+                                            System.out.println("Product not found.");
+                                            break;
+                                        }
                                         normalCustomers.get(index).removeFromCart(orders_mangments.allProducts.get(productID));
                                         break;
                                     case 5:
@@ -148,7 +156,6 @@ public class Main {
                                         else
                                         {
                                             orders_mangments.addTheMoneyToSellerAccountAndCheckOut(orders_mangments.allProducts.get(index), normalCustomers.get(index));
-                                            orders_mangments.removeProductQuantity(orders_mangments.allProducts.get(index), quantity);
                                         }
 
                                         break;
@@ -182,11 +189,19 @@ public class Main {
                                         case 2:
                                             System.out.print("Enter the product ID: ");
                                             int productID = scanner.nextInt();
+                                            if (orders_mangments.allProducts.get(productID) == null){
+                                                System.out.println("Product not found.");
+                                                break;
+                                            }
                                             orders_mangments.showProductDetails(orders_mangments.allProducts.get(productID));
                                             break;
                                         case 3:
                                             System.out.print("Enter the product ID: ");
                                             productID = scanner.nextInt();
+                                            if (productID >= orders_mangments.allProducts.size()){
+                                                System.out.println("Product not found.");
+                                                break;
+                                            }
                                             System.out.print("Enter the quantity: ");
                                             quantity = scanner.nextInt();
                                             premiumCustomers.get(index).addToCart(orders_mangments.allProducts.get(productID), quantity);
@@ -194,6 +209,10 @@ public class Main {
                                         case 4:
                                             System.out.print("Enter the product ID: ");
                                             productID = scanner.nextInt();
+                                            if (productID >= orders_mangments.allProducts.size()){
+                                                System.out.println("Product not found.");
+                                                break;
+                                            }
                                             premiumCustomers.get(index).removeFromCart(orders_mangments.allProducts.get(productID));
                                             break;
                                         case 5:
@@ -205,7 +224,6 @@ public class Main {
                                             }
                                             else {
                                                 orders_mangments.addTheMoneyToSellerAccountAndCheckOutPremium(orders_mangments.allProducts.get(index), premiumCustomers.get(index));
-                                                orders_mangments.removeProductQuantity(orders_mangments.allProducts.get(index), quantity);
                                             }
                                             break;
                                         case 7:

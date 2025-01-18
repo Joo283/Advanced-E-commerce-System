@@ -165,11 +165,16 @@ public class Premium_Customer extends SuperUser {
         if (money >= discountedTotal) {
             money -= discountedTotal;
             System.out.println("Payment successful! Remaining balance: $" + money);
-            cart.clear();
+            for (Products product : cart){
+                updateProductQuantity(product);
+            }
         } else {
             System.out.println("Insufficient funds. Please add more money to your account.");
         }
         return total;
+    }
+    private void updateProductQuantity(@NotNull Products product){
+        product.setProductQuantity(product.getProductQuantity()-1);
     }
 
     public void setReview(Products product, String review) {

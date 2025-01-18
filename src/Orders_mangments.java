@@ -40,7 +40,7 @@ public class Orders_mangments {
     }
     public void showAllProducts(){
         if (allProducts.isEmpty()){
-            System.out.println("No products found");
+            System.out.println("No products found.");
             return;
         }
         for (Products product : allProducts){
@@ -49,7 +49,7 @@ public class Orders_mangments {
     }
     public void showProductDetails(@NotNull Products product){
         if (!allProducts.contains(product)){
-            System.out.println("Product not found");
+            System.out.println("Product not found.");
             return;
         }
 
@@ -57,16 +57,22 @@ public class Orders_mangments {
         System.out.println("shop Name: " + product.getShopName());
         System.out.println("Product Description: " + product.getProductDescription());
         System.out.println("Product ID: " + product.getProductID());
-        System.out.println("Product Price: " + product.getProductPrice());
+        System.out.println("Product Price: " + product.getProductPrice() + " $");
         System.out.println("Product Quantity: " + product.getProductQuantity());
         showProductReviews(product);
     }
 
     private void showProductReviews(Products product){
         int i = 1;
+        if(Products.getReviews().isEmpty()){
+            System.out.println("No reviews found");
+            return;
+        }
         for (String review : Products.getReviews()){
             System.out.println( i + " - " + review);
+            i++;
         }
+        System.out.println("Total reviews: " + (i-1));
     }
     public void addTheMoneyToSellerAccountAndCheckOut(@NotNull Products product, @NotNull normalCustomer customer){
        if(product.getProductQuantity() == 0 || !allProducts.contains(product)){
@@ -74,6 +80,22 @@ public class Orders_mangments {
            return;
          }
         product.getSaller().addBalance(customer.checkout());
+        System.out.println("The product is checked out successfully and the cart is empty now");
+        System.out.println("if you want to add a review choose 1 or 0 to exit");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+        while (choice != 0){
+            System.out.println("enter the product ID: ");
+            int productID = scanner.nextInt();
+            scanner.nextLine();
+            System.out.println("Please enter your review: ");
+            String review = scanner.nextLine();
+            allProducts.get(productID).setReviews(review);
+            System.out.println("Review added successfully");
+            System.out.println("if you want to add another review choose 1 or 0 to exit");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+        }
     }
     public void addTheMoneyToSellerAccountAndCheckOutPremium(@NotNull Products product, @NotNull Premium_Customer customer){
         if(product.getProductQuantity() == 0 || !allProducts.contains(product)){
@@ -81,15 +103,10 @@ public class Orders_mangments {
             return;
         }
         product.getSaller().addBalance(customer.checkout());
+
     }
-    public void removeProductQuantity(@NotNull Products product, int quantity){
-        if (product.getProductQuantity() < quantity){
-            System.out.println("The quantity you entered is not available");
-            return;
-        }
-        product.setProductQuantity(product.getProductQuantity() - quantity);
-        System.out.println("The quantity has been updated successfully");
-    }
+
+
 
 
 

@@ -143,8 +143,12 @@ public class normalCustomer extends SuperUser {
         double total = 0;
         for (Products product : cart) {
             total += product.getProductPrice();
+
         }
         return total;
+    }
+    private void updateProductQuantity(@NotNull Products product){
+        product.setProductQuantity(product.getProductQuantity()-1);
     }
 
     public double checkout() {
@@ -154,11 +158,17 @@ public class normalCustomer extends SuperUser {
         } else {
             money -= total;
             System.out.println("Payment successful your remaining balance is " + money);
+            for (Products product : cart){
+                updateProductQuantity(product);
+            }
+
             cart.clear();
             System.out.println("the products will be delivered to you within 3 days at this address : " + getAddress());
             System.out.println("Thank you for shopping with us");
 
+
         }
+
         return total;
     }
 
