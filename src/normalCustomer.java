@@ -43,25 +43,25 @@ public class normalCustomer extends SuperUser {
             String fullName = scanner.nextLine();
             setFullName(fullName);
             confirmAddingUser(email, password, fullName);
-            System.out.println(check + " Continue to enter your remaining information");
-
-            System.out.print("Enter your username : ");
-            String username = scanner.nextLine();
-            setUsername(username);
-
-            setPhoneNumberWithRetries();
-
-            System.out.print("Enter your address : ");
-            String address = scanner.nextLine();
-            setAddress(address);
-
-            System.out.print("Enter your city : ");
-            String city = scanner.nextLine();
-            setCity(city);
-
-            System.out.print("Enter your postal code : ");
-            int postalCode = scanner.nextInt();
-            setPostalCode(postalCode);
+//            System.out.println(check + " Continue to enter your remaining information");
+//
+//            System.out.print("Enter your username : ");
+//            String username = scanner.nextLine();
+//            setUsername(username);
+//
+//            setPhoneNumberWithRetries();
+//
+//            System.out.print("Enter your address : ");
+//            String address = scanner.nextLine();
+//            setAddress(address);
+//
+//            System.out.print("Enter your city : ");
+//            String city = scanner.nextLine();
+//            setCity(city);
+//
+//            System.out.print("Enter your postal code : ");
+//            int postalCode = scanner.nextInt();
+//            setPostalCode(postalCode);
 
             setPaymentMethod();
             setMoney();
@@ -161,8 +161,6 @@ public class normalCustomer extends SuperUser {
             for (Products product : cart){
                 updateProductQuantity(product);
             }
-
-            cart.clear();
             System.out.println("the products will be delivered to you within 3 days at this address : " + getAddress());
             System.out.println("Thank you for shopping with us");
 
@@ -171,12 +169,15 @@ public class normalCustomer extends SuperUser {
 
         return total;
     }
+    public void clearCart(){
+        cart.clear();
+    }
 
     public ArrayList<Products> getCart() {
         return cart;
     }
 
     public void setReview(Products product, String review) {
-        Products.setReviews(review);
+        product.setReviews(review);
     }
 }

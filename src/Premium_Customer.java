@@ -33,6 +33,7 @@ public class Premium_Customer extends SuperUser {
         setPremiumCustomerID(id);
     }
 
+
     public void setNewUser() {
         System.out.print("Enter your email: ");
         String email = scanner.nextLine();
@@ -178,10 +179,14 @@ public class Premium_Customer extends SuperUser {
     }
 
     public void setReview(Products product, String review) {
-        Products.setReviews(review);
+        product.setReviews(review);
     }
     public ArrayList<Products> getCart() {
         return cart;
+    }
+
+    public void clearCart() {
+        cart.clear();
     }
 
 }

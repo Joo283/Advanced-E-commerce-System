@@ -9,11 +9,13 @@
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SuperUser {
     private static final Map<Pair<String, String>, String> allUsers = new HashMap<>(); // Pair<email, password> -> role
+    private static final ArrayList<String> emails = new ArrayList<>();
     private String username;
     private  String fullName;
     private String email;
@@ -122,7 +124,7 @@ public class SuperUser {
         Pair<String, String> userPair = new Pair<>(email, password);
 
 
-        if (allUsers.containsKey(userPair)) {
+        if (allUsers.containsKey(userPair) || emails.contains(email)) {
             return "User already exists";
         }
 
@@ -141,6 +143,7 @@ public class SuperUser {
         this.email = email;
         this.password = password;
         this.fullName = fullName;
+        emails.add(email);
     }
 
     @NotNull

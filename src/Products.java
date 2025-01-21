@@ -8,7 +8,7 @@ public class Products {
     private int productID;
     private static int productCounter = 0;
     private String shopName;
-    private static ArrayList<String> reviews = new ArrayList<>();
+    public  ArrayList<String> reviews = new ArrayList<>();
     Saller saller = new Saller();
     private static int ID = 0;
 
@@ -23,11 +23,11 @@ public class Products {
         return saller;
     }
 
-    public static void setReviews(String review) {
-        Products.reviews.add(review); ;
+    public  void setReviews(String review) {
+        reviews.add(review);
     }
 
-    public static ArrayList<String> getReviews() {
+    public ArrayList<String> getReviews() {
         return reviews;
     }
 
@@ -86,4 +86,5 @@ public class Products {
     public String getProductName() {
         return productName;
     }
+
 }
