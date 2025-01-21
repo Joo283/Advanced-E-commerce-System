@@ -1,11 +1,14 @@
+//this is the main class that run all the process of the application
+//it has the main method that run the application
+//it has 3 search methods to search for the user in the list of users
+//simple case statement to choose between sign in, sign up, and exit
+//simple case statement to choose between sign in as customer, seller, or exit
+//simple case statement to sign up as a premium user, normal user, seller, or exit
 import org.jetbrains.annotations.NotNull;
-
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Scanner;
-
 public class Main {
-
     public int searchForNormalCustomer(String email, String password, @NotNull ArrayList<normalCustomer> normalCustomers) {
         for (int i = 0; i < normalCustomers.size(); i++) {
             if (normalCustomers.get(i).getEmail().equals(email) && normalCustomers.get(i).getPassword().equals(password)) {
@@ -47,11 +50,6 @@ public class Main {
             product.setProductId();
             orders_mangments.allProducts.add(product);
         }
-
-
-
-
-
         while (begin) {
             System.out.println("Enter 1 to sign in:");
             System.out.println("Enter 2 to sign up:");
@@ -189,6 +187,10 @@ public class Main {
                                         case 2:
                                             System.out.print("Enter the product ID: ");
                                             int productID = scanner.nextInt();
+                                            if (productID >= orders_mangments.allProducts.size()){
+                                                System.out.println("Product not found.");
+                                                break;
+                                            }
                                             if (orders_mangments.allProducts.get(productID) == null){
                                                 System.out.println("Product not found.");
                                                 break;

@@ -1,3 +1,10 @@
+//this class is used to create products objects
+//it has methods to set and get the product name, description, price, quantity, ID, shop name, reviews, and seller
+//it has a method to add reviews to the product
+//it has a method to get the reviews of the product
+//simply it is a class to create products objects
+
+
 import java.util.ArrayList;
 
 public class Products {

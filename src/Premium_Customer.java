@@ -1,7 +1,15 @@
+// This file contains the Premium_Customer class which extends the SuperUser class.
+// This class is used to create a premium customer object that has a premium ID, money, and a cart.
+// The class has methods to add and remove products from the cart, view the cart, calculate the total price of the products in the cart, and checkout.
+// The class also has methods to set the payment method, set the money, generate a premium ID, and confirm the premium customer status.
+// The class has a method to set a review for a product and update the product quantity after checkout.
+// The class also has a method to clear the cart after checkout.
+// The class has a method to add a new user and set the user's information.
+
+
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Scanner;
-
 public class Premium_Customer extends SuperUser {
     private static final ArrayList<Integer> allPremiumCustomersID = new ArrayList<>();
     private static final Scanner scanner = new Scanner(System.in);

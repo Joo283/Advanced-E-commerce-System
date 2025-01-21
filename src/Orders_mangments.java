@@ -1,5 +1,11 @@
-import org.jetbrains.annotations.NotNull;
+// This class is responsible for managing the orders and the products in the system
+// This class has methods to add a product, remove a product, show all products, show product details, show product reviews, show product reviews for a seller, add the money to the seller account and checkout, add the money to the seller account and checkout for a premium customer, and update the product information
+// This class has an array list of all products in the system
+//simply this class is responsible for managing the products and the orders in the system from the seller and the customer side
 
+
+
+import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Scanner;
 

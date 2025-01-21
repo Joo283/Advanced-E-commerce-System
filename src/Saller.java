@@ -1,8 +1,13 @@
+// This file contains the class that represents the seller in the system.
+// The class has methods to add balance, show the seller's balance, set the market address, set the account number, get the market name, get the products list, set a new seller, add a product, show the seller's products, and add the seller to the list.
+// The class has a constructor that initializes the products list.
+//simply this class is used to create a seller object and set the seller information and methods to handle the seller information and transactions
+
+
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.AbstractMap.SimpleEntry;
 
@@ -16,18 +21,14 @@ public class Saller extends SuperUser {
     private String accountNumber;
     private double balance;
 
-
-
     // Constructor
     public Saller() {
     }
-
     // Methods to handle balance
     public void addBalance(double balance) {
         this.balance += balance;
 
     }
-
     public void showSellerBalance(String accountNumber) {
         if(this.accountNumber.equals(accountNumber))
             System.out.println("Your balance is: " + this.balance);
@@ -43,7 +44,6 @@ public class Saller extends SuperUser {
     public String getMarketAddress() {
         return marketAddress;
     }
-
     public boolean setAccountNumber(@NotNull String accountNumber) {
         if (accountNumber.length() == 14 && accountNumber.matches("[0-9]+") && !allAccounts.contains(accountNumber)) {
             this.accountNumber = accountNumber;
@@ -54,7 +54,6 @@ public class Saller extends SuperUser {
             return false;
         }
     }
-
     public String getMarketName() {
         return marketName;
     }

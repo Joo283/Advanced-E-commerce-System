@@ -1,8 +1,9 @@
+// Purpose: Contains the normalCustomer class which is a subclass of SuperUser and contains the methods and attributes of a normal customer
+//this class contains the methods to add to cart, remove from cart, view cart, checkout, set review, clear cart, set new user, set payment method, set money, and update product quantity
+//simply this class is used to create a normal customer object and set the customer information and methods to handle the customer information and transactions
 import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Scanner;
-
 public class normalCustomer extends SuperUser {
     Scanner scanner = new Scanner(System.in);
     private final ArrayList<Products> cart = new ArrayList<>();

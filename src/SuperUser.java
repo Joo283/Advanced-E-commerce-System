@@ -5,6 +5,7 @@
 //this class is responsible for checking if the email and password are correct or not
 //this class is responsible for setting the user's full name, email, password, role, phone number, address, postal code, and city
 //this class is responsible for printing the user's information
+//simply this class is responsible for managing the users in the system
 
 
 import org.jetbrains.annotations.NotNull;
@@ -104,7 +105,6 @@ public class SuperUser {
         return email.contains("@") && email.contains(".") && email.length() > 8 && email.length() < 50 &&
                 !email.contains(" ") && email.endsWith(".com");
     }
-
     public boolean checkValidPassword(@NotNull String password) {
         return password.length() > 8 && password.matches(".*\\d.*") && password.matches(".*[A-Z].*") &&
                 password.length() < 50;
