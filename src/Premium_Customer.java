@@ -156,7 +156,7 @@ public class Premium_Customer extends SuperUser {
         return cart.stream().mapToDouble(Products::getProductPrice).sum();
     }
 
-    public double checkout() {
+    public void checkout() {
         double total = calculateTotal();
         System.out.println("Your total is: $" + total);
         double discount = 0.3;
@@ -168,11 +168,12 @@ public class Premium_Customer extends SuperUser {
             System.out.println("Payment successful! Remaining balance: $" + money);
             for (Products product : cart){
                 updateProductQuantity(product);
+                product.getSaller().addBalance(product.getProductPrice());
             }
         } else {
             System.out.println("Insufficient funds. Please add more money to your account.");
         }
-        return total;
+
     }
     private void updateProductQuantity(@NotNull Products product){
         product.setProductQuantity(product.getProductQuantity()-1);

@@ -1,17 +1,21 @@
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.AbstractMap.SimpleEntry;
 
 public class Saller extends SuperUser {
     private static final Scanner scanner = new Scanner(System.in);
     public static final ArrayList<SimpleEntry<Integer, String>> allSallersID = new ArrayList<>(); // <sallerID, marketName>
-    private static final ArrayList<SimpleEntry<String,Double>> bankAccounts = new ArrayList<>();
+    private static final ArrayList<String> allAccounts = new ArrayList<>();
     private final ArrayList<Products> productsList = new ArrayList<>();
     private String marketName;
     private String marketAddress;
     private String accountNumber;
+    private double balance;
+
 
 
     // Constructor
@@ -20,15 +24,15 @@ public class Saller extends SuperUser {
 
     // Methods to handle balance
     public void addBalance(double balance) {
-        bankAccounts.forEach(account -> {
-            if (account.getKey().equals(this.accountNumber)) {
-                account.setValue(account.getValue() + balance);
-            }
-        });
+        this.balance += balance;
+
     }
 
-    public void showSellerBalance() {
-        System.out.println("Your balance is: " + bankAccounts.stream().filter(account -> account.getKey().equals(this.accountNumber)).findFirst().get().getValue());
+    public void showSellerBalance(String accountNumber) {
+        if(this.accountNumber.equals(accountNumber))
+            System.out.println("Your balance is: " + this.balance);
+        else
+            System.out.println("Invalid account number.");
     }
 
     // Setter and Getter methods for market details
@@ -41,9 +45,9 @@ public class Saller extends SuperUser {
     }
 
     public boolean setAccountNumber(@NotNull String accountNumber) {
-        if (accountNumber.length() == 14 && accountNumber.matches("[0-9]+") && !bankAccounts.contains(accountNumber)) {
+        if (accountNumber.length() == 14 && accountNumber.matches("[0-9]+") && !allAccounts.contains(accountNumber)) {
             this.accountNumber = accountNumber;
-            bankAccounts.add(new SimpleEntry<>(accountNumber, 0.0));
+            allAccounts.add(accountNumber);
             return true;
         } else {
             System.out.println("Invalid account number. Please enter a valid account number(14 digit number).");
@@ -94,6 +98,7 @@ public class Saller extends SuperUser {
 
         System.out.print("Enter your market ID: ");
         int sellerID = scanner.nextInt();
+        scanner.nextLine();
 
         System.out.print("Enter your market address: ");
         setMarketAddress(scanner.nextLine());
@@ -114,19 +119,13 @@ public class Saller extends SuperUser {
             System.out.println("Seller added successfully.");
         }
     }
-
-    // Methods to manage products
     public void addProduct(Products product) {
         productsList.add(product);
     }
 
     public void showSellerProducts() {
         System.out.println("Your products are: ");
-        int i = 1;
-        for (Products product : productsList) {
-            System.out.println(i + " - " + product.getProductName());
-            i++;
-        }
+        productsList.forEach(product -> System.out.println(product.getProductName() + " and the product ID is: " + product.getProductID() + "and the quantity is: " + product.getProductQuantity()));
     }
 
 }

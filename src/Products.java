@@ -9,13 +9,13 @@ public class Products {
     private static int productCounter = 0;
     private String shopName;
     public  ArrayList<String> reviews = new ArrayList<>();
-    Saller saller = new Saller();
+    private Saller saller = new Saller();
     private static int ID = 0;
 
     public Products() {
     }
 
-    public void setSaller(Saller saller) {
+    public void setSeller(Saller saller) {
         this.saller = saller;
     }
 

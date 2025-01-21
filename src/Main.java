@@ -238,19 +238,18 @@ public class Main {
                             }
                             break;
                         case 2:
-                            System.out.println("Enter your Market ID: ");
+                            System.out.print("Enter your Market ID: ");
                             int sellerID = scanner.nextInt();
                             scanner.nextLine();
-                            System.out.println("Enter your market name: ");
+                            System.out.print("Enter your market name: ");
                             String marketName = scanner.nextLine();
-                            scanner.nextLine();
                             AbstractMap.SimpleEntry<Integer, String> sellerIdPair = new AbstractMap.SimpleEntry<>(sellerID, marketName);
                             if (!Saller.allSallersID.contains(sellerIdPair)) {
                                 System.out.println("You are not a registered seller.");
                             } else {
-                                System.out.println("Please enter your email: ");
+                                System.out.print("Please enter your email: ");
                                 email = scanner.nextLine();
-                                System.out.println("Please enter your password: ");
+                                System.out.print("Please enter your password: ");
                                 password = scanner.nextLine();
                                 loginResult = SuperUser.checkUser(email, password);
                                 if (loginResult.equals("Invalid email or password")) {
@@ -259,6 +258,59 @@ public class Main {
                                 }
                                 index = new Main().searchForSeller(email, password, sellersList);
                                 System.out.println("Welcome back! Your full name is: " + sellersList.get(index).getFullName());
+                                boolean turnOnSeller = true;
+                                System.out.println("Chose one of the following options: ");
+                                while (turnOnSeller) {
+                                    System.out.println("1 - to add a product");
+                                    System.out.println("2 - to view your products");
+                                    System.out.println("3 - to view your balance");
+                                    System.out.println("4 - to remove a product");
+                                    System.out.println("5 - to update a product information");
+                                    System.out.println("6 - to view product reviews");
+                                    System.out.println("7 - to exit");
+                                    int choice4 = scanner.nextInt();
+                                    scanner.nextLine();
+                                    switch (choice4) {
+                                        case 1:
+                                            Products product = new Products();
+                                            orders_mangments.addProduct(product, sellersList.get(index));
+                                            break;
+                                        case 2:
+                                            sellersList.get(index).showSellerProducts();
+                                            break;
+                                        case 3:
+                                            System.out.println("please enter your bank account number: ");
+                                            String bankAccount = scanner.nextLine();
+
+                                            sellersList.get(index).showSellerBalance(bankAccount);
+                                            break;
+                                       case 4:
+                                            System.out.println("Enter the product ID: ");
+                                            int productID = scanner.nextInt();
+                                            scanner.nextLine();
+                                            orders_mangments.removeProduct(productID, sellersList.get(index));
+                                            break;
+                                       case 5:
+                                            System.out.println("Enter the product ID: ");
+                                            productID = scanner.nextInt();
+                                            scanner.nextLine();
+                                            orders_mangments.updateProductInformation(productID, sellersList.get(index));
+                                            break;
+                                        case 6:
+                                            System.out.println("Enter the product ID: ");
+                                            productID = scanner.nextInt();
+                                            scanner.nextLine();
+                                            orders_mangments.showProductReviewsForSeller(productID, sellersList.get(index));
+                                            break;
+                                        case 7:
+                                            turnOnSeller = false;
+                                            break;
+                                        default:
+                                            System.out.println("Invalid choice. Please try again.");
+                                            break;
+                                    }
+                                }
+
                             }
                             break;
 

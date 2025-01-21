@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Orders_mangments {
     Scanner scanner = new Scanner(System.in);
     public   ArrayList<Products> allProducts = new ArrayList<>();
-    public void addProduct(@NotNull Products product, @NotNull Saller saller){
+    public void addProduct(Products product, Saller saller){
         System.out.println("Please enter the product name: ");
         String productName = scanner.nextLine();
         product.setProductName(productName);
@@ -26,11 +26,13 @@ public class Orders_mangments {
         product.setProductId();
         System.out.println("Product added successfully and the product ID is: " + product.getProductID());
         saller.addProduct(product);
-        product.setSaller(saller);
+        product.setSeller(saller);
     }
-    public void removeProduct(@NotNull Products product , @NotNull Saller saller){
+    public void removeProduct(int productID, @NotNull Saller saller){
+        Products product = allProducts.get(productID);
         if (product.getSaller() ==  saller && saller.getProductsList().contains(product)){
             allProducts.remove(product);
+            saller.getProductsList().remove(product);
             System.out.println("Product removed successfully ");
         }
         else{
@@ -75,12 +77,23 @@ public class Orders_mangments {
         }
         System.out.println("Total reviews: " + (i-1));
     }
+
+    public void showProductReviewsForSeller(int productID, Saller saller){
+        Products product = allProducts.get(productID);
+        if (product.getSaller() == saller && saller.getProductsList().contains(product)){
+            showProductReviews(product);
+        }
+        else{
+            System.out.println("Product not found");
+        }
+
+    }
     public void addTheMoneyToSellerAccountAndCheckOut(@NotNull Products product, @NotNull normalCustomer customer){
        if(product.getProductQuantity() == 0 || !allProducts.contains(product)) {
            System.out.println("The product is out of stock");
            return;
        }
-        product.getSaller().addBalance(customer.checkout());
+        customer.checkout();
         System.out.println("if you want to add a review choose 1 or 0 to exit");
         int choice = scanner.nextInt();
         scanner.nextLine();
@@ -107,12 +120,13 @@ public class Orders_mangments {
         customer.clearCart();
 
     }
+
     public void addTheMoneyToSellerAccountAndCheckOutPremium(@NotNull Products product, @NotNull Premium_Customer customer){
         if(product.getProductQuantity() == 0 || !allProducts.contains(product)){
             System.out.println("The product is out of stock");
             return;
         }
-        product.getSaller().addBalance(customer.checkout());
+        customer.checkout();
         System.out.println("if you want to add a review choose 1 or 0 to exit");
         int choice = scanner.nextInt();
         scanner.nextLine();
@@ -138,6 +152,47 @@ public class Orders_mangments {
         }
         customer.clearCart();
 
+    }
+    public void updateProductInformation(int productID , Saller saller){
+        Products product = allProducts.get(productID);
+        if (product.getSaller() == saller && saller.getProductsList().contains(product)){
+            System.out.println("Please chose what you want to update: ");
+            System.out.println("1- Product Name");
+            System.out.println("2- Product Description");
+            System.out.println("3- Product Price");
+            System.out.println("4- Product Quantity");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            switch (choice){
+                case 1:
+                    System.out.println("Please enter the new product name: ");
+                    String productName = scanner.nextLine();
+                    product.setProductName(productName);
+                    break;
+                case 2:
+                    System.out.println("Please enter the new product description: ");
+                    String productDescription = scanner.nextLine();
+                    product.setProductDescription(productDescription);
+                    break;
+                case 3:
+                    System.out.println("Please enter the new product price: ");
+                    double productPrice = scanner.nextDouble();
+                    scanner.nextLine();
+                    product.setProductPrice(productPrice);
+                    break;
+                case 4:
+                    System.out.println("Please enter the new product quantity: ");
+                    int productQuantity = scanner.nextInt();
+                    scanner.nextLine();
+                    product.setProductQuantity(productQuantity);
+                    break;
+                default:
+                    System.out.println("Invalid choice");
+            }
+        }
+        else{
+            System.out.println("Product not found");
+        }
     }
 
 

@@ -43,25 +43,25 @@ public class normalCustomer extends SuperUser {
             String fullName = scanner.nextLine();
             setFullName(fullName);
             confirmAddingUser(email, password, fullName);
-//            System.out.println(check + " Continue to enter your remaining information");
-//
-//            System.out.print("Enter your username : ");
-//            String username = scanner.nextLine();
-//            setUsername(username);
-//
-//            setPhoneNumberWithRetries();
-//
-//            System.out.print("Enter your address : ");
-//            String address = scanner.nextLine();
-//            setAddress(address);
-//
-//            System.out.print("Enter your city : ");
-//            String city = scanner.nextLine();
-//            setCity(city);
-//
-//            System.out.print("Enter your postal code : ");
-//            int postalCode = scanner.nextInt();
-//            setPostalCode(postalCode);
+            System.out.println(check + " Continue to enter your remaining information");
+
+            System.out.print("Enter your username : ");
+            String username = scanner.nextLine();
+            setUsername(username);
+
+            setPhoneNumberWithRetries();
+
+            System.out.print("Enter your address : ");
+            String address = scanner.nextLine();
+            setAddress(address);
+
+            System.out.print("Enter your city : ");
+            String city = scanner.nextLine();
+            setCity(city);
+
+            System.out.print("Enter your postal code : ");
+            int postalCode = scanner.nextInt();
+            setPostalCode(postalCode);
 
             setPaymentMethod();
             setMoney();
@@ -151,7 +151,7 @@ public class normalCustomer extends SuperUser {
         product.setProductQuantity(product.getProductQuantity()-1);
     }
 
-    public double checkout() {
+    public void checkout() {
         double total = calculateTotal();
         if (total > money) {
             System.out.println("Insufficient funds");
@@ -160,14 +160,13 @@ public class normalCustomer extends SuperUser {
             System.out.println("Payment successful your remaining balance is " + money);
             for (Products product : cart){
                 updateProductQuantity(product);
+                product.getSaller().addBalance(product.getProductPrice());
             }
             System.out.println("the products will be delivered to you within 3 days at this address : " + getAddress());
             System.out.println("Thank you for shopping with us");
 
 
         }
-
-        return total;
     }
     public void clearCart(){
         cart.clear();
