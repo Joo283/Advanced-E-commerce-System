@@ -1,18 +1,13 @@
-// This file contains the class that represents the seller in the system.
-// The class has methods to add balance, show the seller's balance, set the market address, set the account number, get the market name, get the products list, set a new seller, add a product, show the seller's products, and add the seller to the list.
-// The class has a constructor that initializes the products list.
-//simply this class is used to create a seller object and set the seller information and methods to handle the seller information and transactions
-
-
-
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.AbstractMap.SimpleEntry;
 
-public class Saller extends SuperUser {
-    private static final Scanner scanner = new Scanner(System.in);
+public class Saller extends SuperUser  implements Serializable {
     public static final ArrayList<SimpleEntry<Integer, String>> allSallersID = new ArrayList<>(); // <sallerID, marketName>
     private static final ArrayList<String> allAccounts = new ArrayList<>();
     private final ArrayList<Products> productsList = new ArrayList<>();
@@ -21,14 +16,18 @@ public class Saller extends SuperUser {
     private String accountNumber;
     private double balance;
 
+
+
     // Constructor
     public Saller() {
     }
+
     // Methods to handle balance
     public void addBalance(double balance) {
         this.balance += balance;
 
     }
+
     public void showSellerBalance(String accountNumber) {
         if(this.accountNumber.equals(accountNumber))
             System.out.println("Your balance is: " + this.balance);
@@ -44,6 +43,7 @@ public class Saller extends SuperUser {
     public String getMarketAddress() {
         return marketAddress;
     }
+
     public boolean setAccountNumber(@NotNull String accountNumber) {
         if (accountNumber.length() == 14 && accountNumber.matches("[0-9]+") && !allAccounts.contains(accountNumber)) {
             this.accountNumber = accountNumber;
@@ -54,6 +54,7 @@ public class Saller extends SuperUser {
             return false;
         }
     }
+
     public String getMarketName() {
         return marketName;
     }
@@ -61,7 +62,7 @@ public class Saller extends SuperUser {
     public ArrayList<Products> getProductsList() {
         return productsList;
     }
-    public void setNewSeller() {
+    public void setNewSeller(Scanner scanner) {
         System.out.print("Enter your email: ");
         String email = scanner.nextLine();
         System.out.print("Enter your password: ");
@@ -86,12 +87,12 @@ public class Saller extends SuperUser {
             setFullName(fullName);
             confirmAddingUser(email, password, fullName);
             System.out.println(validationMessage);
-            addMarketInformation();
+            addMarketInformation(new Scanner(System.in));
         } else {
             System.out.println("You have exceeded the maximum number of tries. Please try again later.");
         }
     }
-    private void addMarketInformation() {
+    private void addMarketInformation(Scanner scanner) {
         System.out.print("Enter your market name: ");
         this.marketName = scanner.nextLine();
 

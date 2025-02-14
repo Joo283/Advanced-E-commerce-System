@@ -1,16 +1,15 @@
-// Purpose: Contains the normalCustomer class which is a subclass of SuperUser and contains the methods and attributes of a normal customer
-//this class contains the methods to add to cart, remove from cart, view cart, checkout, set review, clear cart, set new user, set payment method, set money, and update product quantity
-//simply this class is used to create a normal customer object and set the customer information and methods to handle the customer information and transactions
 import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
-public class normalCustomer extends SuperUser {
-    Scanner scanner = new Scanner(System.in);
+
+public class normalCustomer extends SuperUser  implements Serializable {
     private final ArrayList<Products> cart = new ArrayList<>();
     private static final ArrayList<String> allPaymentCards= new ArrayList<>();
     private double money;
 
-    public void setNewUser() {
+    public void setNewUser(Scanner scanner) {
         int tryies = 0;
 
 
@@ -50,7 +49,7 @@ public class normalCustomer extends SuperUser {
             String username = scanner.nextLine();
             setUsername(username);
 
-            setPhoneNumberWithRetries();
+            setPhoneNumberWithRetries(new Scanner(System.in));
 
             System.out.print("Enter your address : ");
             String address = scanner.nextLine();
@@ -64,14 +63,14 @@ public class normalCustomer extends SuperUser {
             int postalCode = scanner.nextInt();
             setPostalCode(postalCode);
 
-            setPaymentMethod();
-            setMoney();
+            setPaymentMethod(new Scanner(System.in));
+            setMoney(new Scanner(System.in));
         } else {
             System.out.print("You have exceeded the maximum number of attempts. Please try again later.");
         }
     }
 
-    private void setPhoneNumberWithRetries() {
+    private void setPhoneNumberWithRetries(Scanner scanner) {
         int tryies = 0;
         System.out.print("Enter your phone number : ");
         String phoneNumber = scanner.nextLine();
@@ -87,7 +86,7 @@ public class normalCustomer extends SuperUser {
         }
     }
 
-    public void setPaymentMethod() {
+    public void setPaymentMethod(Scanner scanner) {
         System.out.print("Please enter your card Number : ");
         while (!setPaymentMethod(scanner.nextLine())) {
             System.out.print("Please enter your card Number : ");
@@ -104,7 +103,7 @@ public class normalCustomer extends SuperUser {
         }
     }
 
-    public void setMoney() {
+    public void setMoney(Scanner scanner) {
         System.out.print("Please enter your balance : ");
         this.money = scanner.nextDouble();
     }

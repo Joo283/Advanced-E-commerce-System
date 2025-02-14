@@ -1,55 +1,24 @@
-//this is the main class that run all the process of the application
-//it has the main method that run the application
-//it has 3 search methods to search for the user in the list of users
-//simple case statement to choose between sign in, sign up, and exit
-//simple case statement to choose between sign in as customer, seller, or exit
-//simple case statement to sign up as a premium user, normal user, seller, or exit
-import org.jetbrains.annotations.NotNull;
-import java.util.AbstractMap;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
-public class Main {
-    public int searchForNormalCustomer(String email, String password, @NotNull ArrayList<normalCustomer> normalCustomers) {
-        for (int i = 0; i < normalCustomers.size(); i++) {
-            if (normalCustomers.get(i).getEmail().equals(email) && normalCustomers.get(i).getPassword().equals(password)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    public int searchForPremiumCustomer(String email, String password, @NotNull ArrayList<Premium_Customer> premiumCustomers) {
-        for (int i = 0; i < premiumCustomers.size(); i++) {
-            if (premiumCustomers.get(i).getEmail().equals(email) && premiumCustomers.get(i).getPassword().equals(password)) {
-                return i;
-            }
-        }
-        return -1;
-    }
 
-    public int searchForSeller(String email, String password, @NotNull ArrayList<Saller> sellersList) {
-        for (int i = 0; i < sellersList.size(); i++) {
-            if (sellersList.get(i).getEmail().equals(email) && sellersList.get(i).getPassword().equals(password)) {
-                return i;
-            }
-        }
-        return -1;
-    }
+public class Main {
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean begin = true;
-        Orders_mangments orders_mangments = new Orders_mangments();
-        ArrayList<normalCustomer> normalCustomers = new ArrayList<>();
-        ArrayList<Premium_Customer> premiumCustomers = new ArrayList<>();
-        ArrayList<Saller> sellersList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Products product = new Products();
-            product.setProductName("product" + (i + 1));
-            product.setProductDescription("product" + (i + 1) + " description");
-            product.setProductPrice(10 + i * 5);
-            product.setProductQuantity(10 + i * 2);
-            product.setProductId();
-            orders_mangments.allProducts.add(product);
+
+        // Load all data at the start of the program
+        Orders_mangments orders_mangments = Orders_mangments.loadFromFile("orders_data.sep");
+        if (orders_mangments == null) {
+            orders_mangments = new Orders_mangments(); // Create a new instance if loading fails
         }
+
+        ArrayList<normalCustomer> normalCustomers = loadData("normalCustomers.sep");
+        ArrayList<Premium_Customer> premiumCustomers = loadData("premiumCustomers.sep");
+        ArrayList<Saller> sellersList = loadData("sellersList.sep");
+
+        // Main loop
         while (begin) {
             System.out.println("Enter 1 to sign in:");
             System.out.println("Enter 2 to sign up:");
@@ -59,6 +28,7 @@ public class Main {
 
             switch (choice) {
                 case 1:
+                    // Sign-in logic
                     System.out.println("Enter 1 to sign in as customer:");
                     System.out.println("Enter 2 to sign in as seller:");
                     int choice1 = scanner.nextInt();
@@ -66,110 +36,34 @@ public class Main {
 
                     switch (choice1) {
                         case 1:
+                            // Customer sign-in
                             System.out.println("Enter your email: ");
                             String email = scanner.nextLine();
                             System.out.println("Enter your password:");
                             String password = scanner.nextLine();
-                            String loginResult = SuperUser.checkUser(email, password);
-                            if (loginResult.equals("Invalid email or password")) {
-                                System.out.println("User not found. Please try again.");
-                                break;
-                            }
+
                             int index = -1;
                             boolean registered = false;
                             boolean premium = false;
-                            if(new Main().searchForNormalCustomer(email, password, normalCustomers) != -1){
-                                index = new Main().searchForNormalCustomer(email, password, normalCustomers);
+                            index = searchForNormalCustomer(email, password, normalCustomers);
+                            if (index != -1) {
                                 System.out.println("Hello " + normalCustomers.get(index).getFullName() + " welcome back!");
                                 registered = true;
-                            }
-                            else if(new Main().searchForPremiumCustomer(email, password, premiumCustomers) != -1){
-                                index = new Main().searchForPremiumCustomer(email, password, premiumCustomers);
-                                System.out.println("Hello " + premiumCustomers.get(index).getFullName() + " welcome back!");
-                                registered = true;
-                                premium = true;
-                            }
-                            else{
-                                System.out.println("You are not a registered customer.");
-                            }
-                            boolean turnOn = true;
-                            if(registered && !premium) {
-                                System.out.println("Chose one of the following options: ");
-                                int quantity = 0;
-                                while (turnOn) {
-                                System.out.println("1 - to show all products");
-                                System.out.println("2 - to view product details");
-                                System.out.println("3 - to add a product to the cart");
-                                System.out.println("4 - to remove a product from the cart");
-                                System.out.println("5 - to view the cart");
-                                System.out.println("6 - to checkout");
-                                System.out.println("7 - to exit");
-                                int choice3 = scanner.nextInt();
-                                scanner.nextLine();
-
-                                switch (choice3) {
-
-                                    case 1:
-                                        orders_mangments.showAllProducts();
-                                        break;
-                                    case 2:
-                                        System.out.print("Enter the product ID: ");
-                                        int productID = scanner.nextInt();
-                                        scanner.nextLine();
-                                        if(productID >= orders_mangments.allProducts.size()){
-                                            System.out.println("Product not found.");
-                                            break;
-                                        }
-                                        orders_mangments.showProductDetails(orders_mangments.allProducts.get(productID));
-
-                                        break;
-                                    case 3:
-                                        System.out.print("Enter the product ID: ");
-                                        productID = scanner.nextInt();
-                                        if (productID >= orders_mangments.allProducts.size()){
-                                            System.out.println("Product not found.");
-                                            break;
-                                        }
-                                        System.out.print("Enter the quantity: ");
-                                        quantity = scanner.nextInt();
-                                        scanner.nextLine();
-                                        normalCustomers.get(index).addToCart(orders_mangments.allProducts.get(productID), quantity);
-                                        break;
-                                    case 4:
-                                        System.out.println("Enter the product ID: ");
-                                        productID = scanner.nextInt();
-                                        if (productID >= orders_mangments.allProducts.size()){
-                                            System.out.println("Product not found.");
-                                            break;
-                                        }
-                                        normalCustomers.get(index).removeFromCart(orders_mangments.allProducts.get(productID));
-                                        break;
-                                    case 5:
-                                        normalCustomers.get(index).viewCart();
-                                        break;
-                                    case 6:
-                                        if(normalCustomers.get(index).getCart().isEmpty()){
-                                            System.out.println("Your cart is empty.");
-                                        }
-                                        else
-                                        {
-                                            orders_mangments.addTheMoneyToSellerAccountAndCheckOut(orders_mangments.allProducts.get(index), normalCustomers.get(index));
-                                        }
-
-                                        break;
-                                    case 7:
-                                        turnOn = false;
-                                        break;
-                                    default:
-                                        System.out.println("Invalid choice. Please try again.");
-                                        break;
+                            } else {
+                                // Check if the user is a premium customer
+                                index = searchForPremiumCustomer(email, password, premiumCustomers);
+                                if (index != -1) {
+                                    System.out.println("Hello " + premiumCustomers.get(index).getFullName() + " welcome back!");
+                                    registered = true;
+                                    premium = true;
+                                } else {
+                                    System.out.println("You are not a registered customer.");
                                 }
-                                }
-                                break;
                             }
-                            else if(registered && premium) {
-                                System.out.println("Chose one of the following options: ");
-                                int quantity = 0;
+
+                            if (registered) {
+                                // Customer menu logic
+                                boolean turnOn = true;
                                 while (turnOn) {
                                     System.out.println("1 - to show all products");
                                     System.out.println("2 - to view product details");
@@ -180,6 +74,7 @@ public class Main {
                                     System.out.println("7 - to exit");
                                     int choice3 = scanner.nextInt();
                                     scanner.nextLine();
+
                                     switch (choice3) {
                                         case 1:
                                             orders_mangments.showAllProducts();
@@ -187,11 +82,8 @@ public class Main {
                                         case 2:
                                             System.out.print("Enter the product ID: ");
                                             int productID = scanner.nextInt();
-                                            if (productID >= orders_mangments.allProducts.size()){
-                                                System.out.println("Product not found.");
-                                                break;
-                                            }
-                                            if (orders_mangments.allProducts.get(productID) == null){
+                                            scanner.nextLine();
+                                            if (productID >= orders_mangments.allProducts.size()) {
                                                 System.out.println("Product not found.");
                                                 break;
                                             }
@@ -200,32 +92,52 @@ public class Main {
                                         case 3:
                                             System.out.print("Enter the product ID: ");
                                             productID = scanner.nextInt();
-                                            if (productID >= orders_mangments.allProducts.size()){
+                                            if (productID >= orders_mangments.allProducts.size()) {
                                                 System.out.println("Product not found.");
                                                 break;
                                             }
                                             System.out.print("Enter the quantity: ");
-                                            quantity = scanner.nextInt();
-                                            premiumCustomers.get(index).addToCart(orders_mangments.allProducts.get(productID), quantity);
+                                            int quantity = scanner.nextInt();
+                                            scanner.nextLine();
+                                            if (premium) {
+                                                premiumCustomers.get(index).addToCart(orders_mangments.allProducts.get(productID), quantity);
+                                            } else {
+                                                normalCustomers.get(index).addToCart(orders_mangments.allProducts.get(productID), quantity);
+                                            }
                                             break;
                                         case 4:
                                             System.out.print("Enter the product ID: ");
                                             productID = scanner.nextInt();
-                                            if (productID >= orders_mangments.allProducts.size()){
+                                            if (productID >= orders_mangments.allProducts.size()) {
                                                 System.out.println("Product not found.");
                                                 break;
                                             }
-                                            premiumCustomers.get(index).removeFromCart(orders_mangments.allProducts.get(productID));
+                                            if (premium) {
+                                                premiumCustomers.get(index).removeFromCart(orders_mangments.allProducts.get(productID));
+                                            } else {
+                                                normalCustomers.get(index).removeFromCart(orders_mangments.allProducts.get(productID));
+                                            }
                                             break;
                                         case 5:
-                                            premiumCustomers.get(index).viewCart();
+                                            if (premium) {
+                                                premiumCustomers.get(index).viewCart();
+                                            } else {
+                                                normalCustomers.get(index).viewCart();
+                                            }
                                             break;
                                         case 6:
-                                            if(premiumCustomers.get(index).getCart().isEmpty()){
-                                                System.out.println("Your cart is empty.");
-                                            }
-                                            else {
-                                                orders_mangments.addTheMoneyToSellerAccountAndCheckOutPremium(orders_mangments.allProducts.get(index), premiumCustomers.get(index));
+                                            if (premium) {
+                                                if (premiumCustomers.get(index).getCart().isEmpty()) {
+                                                    System.out.println("Your cart is empty.");
+                                                } else {
+                                                    orders_mangments.addTheMoneyToSellerAccountAndCheckOutPremium(orders_mangments.allProducts.get(index), premiumCustomers.get(index), new Scanner(System.in));
+                                                }
+                                            } else {
+                                                if (normalCustomers.get(index).getCart().isEmpty()) {
+                                                    System.out.println("Your cart is empty.");
+                                                } else {
+                                                    orders_mangments.addTheMoneyToSellerAccountAndCheckOut(orders_mangments.allProducts.get(index), normalCustomers.get(index), new Scanner(System.in));
+                                                }
                                             }
                                             break;
                                         case 7:
@@ -236,32 +148,19 @@ public class Main {
                                             break;
                                     }
                                 }
-                                break;
                             }
                             break;
                         case 2:
-                            System.out.print("Enter your Market ID: ");
-                            int sellerID = scanner.nextInt();
-                            scanner.nextLine();
-                            System.out.print("Enter your market name: ");
-                            String marketName = scanner.nextLine();
-                            AbstractMap.SimpleEntry<Integer, String> sellerIdPair = new AbstractMap.SimpleEntry<>(sellerID, marketName);
-                            if (!Saller.allSallersID.contains(sellerIdPair)) {
-                                System.out.println("You are not a registered seller.");
-                            } else {
-                                System.out.print("Please enter your email: ");
-                                email = scanner.nextLine();
-                                System.out.print("Please enter your password: ");
-                                password = scanner.nextLine();
-                                loginResult = SuperUser.checkUser(email, password);
-                                if (loginResult.equals("Invalid email or password")) {
-                                    System.out.println("User not found. Please try again.");
-                                    break;
-                                }
-                                index = new Main().searchForSeller(email, password, sellersList);
+                            // Seller sign-in
+                            System.out.print("Enter your email: ");
+                            email = scanner.nextLine();
+                            System.out.print("Enter your password: ");
+                            password = scanner.nextLine();
+
+                            index = searchForSeller(email, password, sellersList);
+                            if (index != -1) {
                                 System.out.println("Welcome back! Your full name is: " + sellersList.get(index).getFullName());
                                 boolean turnOnSeller = true;
-                                System.out.println("Chose one of the following options: ");
                                 while (turnOnSeller) {
                                     System.out.println("1 - to add a product");
                                     System.out.println("2 - to view your products");
@@ -272,31 +171,31 @@ public class Main {
                                     System.out.println("7 - to exit");
                                     int choice4 = scanner.nextInt();
                                     scanner.nextLine();
+
                                     switch (choice4) {
                                         case 1:
                                             Products product = new Products();
-                                            orders_mangments.addProduct(product, sellersList.get(index));
+                                            orders_mangments.addProduct(product, sellersList.get(index), new Scanner(System.in));
                                             break;
                                         case 2:
                                             sellersList.get(index).showSellerProducts();
                                             break;
                                         case 3:
-                                            System.out.println("please enter your bank account number: ");
+                                            System.out.println("Please enter your bank account number: ");
                                             String bankAccount = scanner.nextLine();
-
                                             sellersList.get(index).showSellerBalance(bankAccount);
                                             break;
-                                       case 4:
+                                        case 4:
                                             System.out.println("Enter the product ID: ");
                                             int productID = scanner.nextInt();
                                             scanner.nextLine();
                                             orders_mangments.removeProduct(productID, sellersList.get(index));
                                             break;
-                                       case 5:
+                                        case 5:
                                             System.out.println("Enter the product ID: ");
                                             productID = scanner.nextInt();
                                             scanner.nextLine();
-                                            orders_mangments.updateProductInformation(productID, sellersList.get(index));
+                                            orders_mangments.updateProductInformation(new Scanner(System.in), productID, sellersList.get(index));
                                             break;
                                         case 6:
                                             System.out.println("Enter the product ID: ");
@@ -312,10 +211,10 @@ public class Main {
                                             break;
                                     }
                                 }
-
+                            } else {
+                                System.out.println("You are not a registered seller.");
                             }
                             break;
-
                         default:
                             System.out.println("Invalid choice. Please try again.");
                             break;
@@ -323,7 +222,8 @@ public class Main {
                     break;
 
                 case 2:
-                    System.out.println("Enter 1 to sign up as a premium user and this service will coast you 20$ :");
+                    // Sign-up logic
+                    System.out.println("Enter 1 to sign up as a premium user:");
                     System.out.println("Enter 2 to sign up as a normal user:");
                     System.out.println("Enter 3 to sign up as a seller:");
                     int choice2 = scanner.nextInt();
@@ -332,24 +232,22 @@ public class Main {
                     switch (choice2) {
                         case 1:
                             Premium_Customer premiumCustomer = new Premium_Customer();
-                            premiumCustomer.setNewUser();
+                            premiumCustomer.setNewUser(new Scanner(System.in));
                             premiumCustomers.add(premiumCustomer);
+                            saveData("premiumCustomers.sep", premiumCustomers);
                             break;
-
                         case 2:
                             normalCustomer normalCustomer = new normalCustomer();
-                            normalCustomer.setNewUser();
+                            normalCustomer.setNewUser(new Scanner(System.in));
                             normalCustomers.add(normalCustomer);
+                            saveData("normalCustomers.sep", normalCustomers);
                             break;
-
                         case 3:
                             Saller seller = new Saller();
-                            seller.setNewSeller();
+                            seller.setNewSeller(new Scanner(System.in));
                             sellersList.add(seller);
-
-
+                            saveData("sellersList.sep", sellersList);
                             break;
-
                         default:
                             System.out.println("Invalid choice. Please try again.");
                             break;
@@ -357,20 +255,9 @@ public class Main {
                     break;
 
                 case 3:
-                    System.out.println("List of Normal Users:");
-                    for (normalCustomer customer : normalCustomers) {
-                        System.out.println("Email: " + customer.getEmail());
-                        System.out.println("Password: " + customer.getPassword());
-                    }
-
-                    System.out.println("List of Premium Users:");
-                    for (Premium_Customer customer : premiumCustomers) {
-                        System.out.println("Email: " + customer.getEmail());
-                        System.out.println("Password: " + customer.getPassword());
-                    }
-
-                    begin = false;
+                    // Exit logic
                     System.out.println("Exiting the application. Goodbye!");
+                    begin = false;
                     break;
 
                 default:
@@ -379,6 +266,62 @@ public class Main {
             }
         }
 
-       scanner.close();
+        // Save all data before exiting
+        orders_mangments.saveToFile("orders_data.sep");
+        saveData("normalCustomers.sep", normalCustomers);
+        saveData("premiumCustomers.sep", premiumCustomers);
+        saveData("sellersList.sep", sellersList);
+
+        scanner.close();
+    }
+
+    // Method to search for a normal customer
+    public static int searchForNormalCustomer(String email, String password, ArrayList<normalCustomer> normalCustomers) {
+        for (int i = 0; i < normalCustomers.size(); i++) {
+            if (normalCustomers.get(i).getEmail().equals(email) && normalCustomers.get(i).getPassword().equals(password)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // Method to search for a premium customer
+    public static int searchForPremiumCustomer(String email, String password, ArrayList<Premium_Customer> premiumCustomers) {
+        for (int i = 0; i < premiumCustomers.size(); i++) {
+            if (premiumCustomers.get(i).getEmail().equals(email) && premiumCustomers.get(i).getPassword().equals(password)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // Method to search for a seller
+    public static int searchForSeller(String email, String password, ArrayList<Saller> sellersList) {
+        for (int i = 0; i < sellersList.size(); i++) {
+            if (sellersList.get(i).getEmail().equals(email) && sellersList.get(i).getPassword().equals(password)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // Method to save data to a file
+    private static <T extends Serializable> void saveData(String filename, ArrayList<T> list) {
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filename))) {
+            outputStream.writeObject(list);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to load data from a file
+    private static <T extends Serializable> ArrayList<T> loadData(String filename) {
+        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(filename))) {
+            ArrayList<T> list = (ArrayList<T>) inputStream.readObject();
+            return list;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>(); // Return an empty list if loading fails
+        }
     }
 }
