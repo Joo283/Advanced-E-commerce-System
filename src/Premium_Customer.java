@@ -1,18 +1,13 @@
-// This file contains the Premium_Customer class which extends the SuperUser class.
-// This class is used to create a premium customer object that has a premium ID, money, and a cart.
-// The class has methods to add and remove products from the cart, view the cart, calculate the total price of the products in the cart, and checkout.
-// The class also has methods to set the payment method, set the money, generate a premium ID, and confirm the premium customer status.
-// The class has a method to set a review for a product and update the product quantity after checkout.
-// The class also has a method to clear the cart after checkout.
-// The class has a method to add a new user and set the user's information.
-
-
 import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
-public class Premium_Customer extends SuperUser {
+
+public class Premium_Customer extends SuperUser implements Serializable {
+
     private static final ArrayList<Integer> allPremiumCustomersID = new ArrayList<>();
-    private static final Scanner scanner = new Scanner(System.in);
     private static final ArrayList<String> allPaymentCards = new ArrayList<>();
     private int premiumCustomerID;
     private final ArrayList<Products> cart = new ArrayList<>();
@@ -20,6 +15,7 @@ public class Premium_Customer extends SuperUser {
 
     public Premium_Customer() {
     }
+
     private void setPremiumCustomerID(int premiumCustomerID) {
         this.premiumCustomerID = premiumCustomerID;
     }
@@ -41,14 +37,13 @@ public class Premium_Customer extends SuperUser {
         setPremiumCustomerID(id);
     }
 
-
-    public void setNewUser() {
+    public void setNewUser(@NotNull Scanner scanner) {
         System.out.print("Enter your email: ");
         String email = scanner.nextLine();
         System.out.print("Enter your password: ");
         String password = scanner.nextLine();
-        setPaymentMethod();
-        setMoney();
+        setPaymentMethod(new Scanner(System.in));
+        setMoney(new Scanner(System.in));
         generatePremiumID();
 
         String validationMessage = validateUser(email, password);
@@ -68,8 +63,8 @@ public class Premium_Customer extends SuperUser {
             System.out.print("Enter your full name : ");
             String fullName = scanner.nextLine();
             setFullName(fullName);
-            confirmAddingUser(email,password,fullName);
-            System.out.println(validationMessage + " countinue to enter your remaining information");
+            confirmAddingUser(email, password, fullName);
+            System.out.println(validationMessage + " continue to enter your remaining information");
             System.out.print("Enter your username : ");
             String username = scanner.nextLine();
             setUsername(username);
@@ -80,18 +75,31 @@ public class Premium_Customer extends SuperUser {
                 phoneNumber = scanner.nextLine();
                 attempts++;
             }
-            System.out.print("Enter your address:");
+            System.out.print("Enter your address: ");
             String address = scanner.nextLine();
             setAddress(address);
-            System.out.print("Enter your city:");
+            System.out.print("Enter your city: ");
             String city = scanner.nextLine();
             setCity(city);
-            System.out.print("Enter your postal code:");
-            int postalCode = scanner.nextInt();
+
+            // Handle postal code input with validation
+            int postalCode = 0;
+            boolean validPostalCode = false;
+            while (!validPostalCode) {
+                try {
+                    System.out.print("Enter your postal code: ");
+                    postalCode = scanner.nextInt();
+                    scanner.nextLine(); // Consume the newline character
+                    validPostalCode = true;
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a valid number for the postal code.");
+                    scanner.nextLine(); // Clear the invalid input
+                }
+            }
             setPostalCode(postalCode);
 
         } else {
-            System.out.println("user not added successfully");
+            System.out.println("User not added successfully.");
         }
     }
 
@@ -102,13 +110,13 @@ public class Premium_Customer extends SuperUser {
             money -= 20;
             return true;
         } else {
-            System.out.println("You need at least $20 to become a Premium Customer please try again later.");
+            System.out.println("You need at least $20 to become a Premium Customer. Please try again later.");
             allPremiumCustomersID.remove((Integer) premiumCustomerID);
             return false;
         }
     }
 
-    public void setPaymentMethod() {
+    public void setPaymentMethod(@NotNull Scanner scanner) {
         System.out.print("Enter your card number (16 digits): ");
         while (!setPaymentMethod(scanner.nextLine())) {
             System.out.print("Invalid input. Please enter a valid 16-digit card number: ");
@@ -124,10 +132,19 @@ public class Premium_Customer extends SuperUser {
         }
     }
 
-    public void setMoney() {
-        System.out.print("Enter your balance: ");
-        this.money = scanner.nextDouble();
-        scanner.nextLine();
+    public void setMoney(Scanner scanner) {
+        boolean validInput = false;
+        while (!validInput) {
+            try {
+                System.out.print("Enter your balance: ");
+                this.money = scanner.nextDouble();
+                scanner.nextLine(); // Consume the newline character
+                validInput = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number for the balance.");
+                scanner.nextLine(); // Clear the invalid input
+            }
+        }
     }
 
     public void addToCart(@NotNull Products product, int quantity) {
@@ -151,7 +168,7 @@ public class Premium_Customer extends SuperUser {
     }
 
     public void viewCart() {
-        if(cart.isEmpty()) {
+        if (cart.isEmpty()) {
             System.out.println("Cart is empty.");
             return;
         }
@@ -164,7 +181,7 @@ public class Premium_Customer extends SuperUser {
         return cart.stream().mapToDouble(Products::getProductPrice).sum();
     }
 
-    public void checkout() {
+    public String checkout() {
         double total = calculateTotal();
         System.out.println("Your total is: $" + total);
         double discount = 0.3;
@@ -174,22 +191,25 @@ public class Premium_Customer extends SuperUser {
         if (money >= discountedTotal) {
             money -= discountedTotal;
             System.out.println("Payment successful! Remaining balance: $" + money);
-            for (Products product : cart){
+            for (Products product : cart) {
                 updateProductQuantity(product);
                 product.getSaller().addBalance(product.getProductPrice());
             }
         } else {
             System.out.println("Insufficient funds. Please add more money to your account.");
+            return "Payment not done successfully";
         }
-
-    }
-    private void updateProductQuantity(@NotNull Products product){
-        product.setProductQuantity(product.getProductQuantity()-1);
+        return "Payment successful";
     }
 
-    public void setReview(Products product, String review) {
+    private void updateProductQuantity(@NotNull Products product) {
+        product.setProductQuantity(product.getProductQuantity() - 1);
+    }
+
+    public void setReview(@NotNull Products product, String review) {
         product.setReviews(review);
     }
+
     public ArrayList<Products> getCart() {
         return cart;
     }
@@ -197,5 +217,4 @@ public class Premium_Customer extends SuperUser {
     public void clearCart() {
         cart.clear();
     }
-
 }
