@@ -2,11 +2,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Orders_mangments implements Serializable {
     private static final long serialVersionUID = 1L;
-
 
     public ArrayList<Products> allProducts = new ArrayList<>();
 
@@ -18,14 +18,39 @@ public class Orders_mangments implements Serializable {
         System.out.println("Please enter the product description: ");
         String productDescription = scanner.nextLine();
         product.setProductDescription(productDescription);
-        System.out.println("Please enter the product price: ");
-        double productPrice = scanner.nextDouble();
-        scanner.nextLine();
+
+        // Handle product price input with validation
+        double productPrice = 0;
+        boolean validPrice = false;
+        while (!validPrice) {
+            try {
+                System.out.println("Please enter the product price: ");
+                productPrice = scanner.nextDouble();
+                scanner.nextLine(); // Consume the newline character
+                validPrice = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number for the product price.");
+                scanner.nextLine(); // Clear the invalid input
+            }
+        }
         product.setProductPrice(productPrice);
-        System.out.println("Please enter the product quantity: ");
-        int productQuantity = scanner.nextInt();
-        scanner.nextLine();
+
+        // Handle product quantity input with validation
+        int productQuantity = 0;
+        boolean validQuantity = false;
+        while (!validQuantity) {
+            try {
+                System.out.println("Please enter the product quantity: ");
+                productQuantity = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline character
+                validQuantity = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number for the product quantity.");
+                scanner.nextLine(); // Clear the invalid input
+            }
+        }
         product.setProductQuantity(productQuantity);
+
         allProducts.add(product);
         product.setShopName(saller.getMarketName());
         product.setProductId();
@@ -104,27 +129,60 @@ public class Orders_mangments implements Serializable {
             System.out.println("The product is out of stock");
             return;
         }
-        customer.checkout();
-        System.out.println("If you want to add a review, choose 1 or 0 to exit");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
+        String chekForpay = customer.checkout();
+
+        int choice = 0;
+        boolean validChoice = false;
+        while (!validChoice) {
+            try {
+                System.out.println("If you want to add a review, choose 1 or 0 to exit");
+                choice = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline character
+                validChoice = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number (1 or 0).");
+                scanner.nextLine(); // Clear the invalid input
+            }
+        }
+
         while (choice != 0) {
-            System.out.println("Please enter the product ID: ");
-            int productID = scanner.nextInt();
-            scanner.nextLine();
+            int productID = 0;
+            boolean validProductID = false;
+            while (!validProductID) {
+                try {
+                    System.out.println("Please enter the product ID: ");
+                    productID = scanner.nextInt();
+                    scanner.nextLine(); // Consume the newline character
+                    validProductID = true;
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a valid number for the product ID.");
+                    scanner.nextLine(); // Clear the invalid input
+                }
+            }
+
             System.out.println("Please enter your review: ");
             String review = scanner.nextLine();
             if (productID < 0 || productID >= allProducts.size() || !allProducts.contains(allProducts.get(productID))) {
                 System.out.println("Product not found");
-            } else if (!customer.getCart().contains(allProducts.get(productID))) {
+            } else if (!customer.getCart().contains(allProducts.get(productID)) || chekForpay.equals("Payment not done successfully")) {
                 System.out.println("You can't review a product you didn't buy");
             } else {
                 allProducts.get(productID).setReviews(review);
                 System.out.println("Review added successfully");
             }
-            System.out.println("If you want to add another review, choose 1 or 0 to exit");
-            choice = scanner.nextInt();
-            scanner.nextLine();
+
+            validChoice = false;
+            while (!validChoice) {
+                try {
+                    System.out.println("If you want to add another review, choose 1 or 0 to exit");
+                    choice = scanner.nextInt();
+                    scanner.nextLine(); // Consume the newline character
+                    validChoice = true;
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a valid number (1 or 0).");
+                    scanner.nextLine(); // Clear the invalid input
+                }
+            }
         }
         customer.clearCart();
     }
@@ -135,27 +193,60 @@ public class Orders_mangments implements Serializable {
             System.out.println("The product is out of stock");
             return;
         }
-        customer.checkout();
-        System.out.println("If you want to add a review, choose 1 or 0 to exit");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
+        String checkForPayment = customer.checkout();
+
+        int choice = 0;
+        boolean validChoice = false;
+        while (!validChoice) {
+            try {
+                System.out.println("If you want to add a review, choose 1 or 0 to exit");
+                choice = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline character
+                validChoice = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number (1 or 0).");
+                scanner.nextLine(); // Clear the invalid input
+            }
+        }
+
         while (choice != 0) {
-            System.out.println("Please enter the product ID: ");
-            int productID = scanner.nextInt();
-            scanner.nextLine();
+            int productID = 0;
+            boolean validProductID = false;
+            while (!validProductID) {
+                try {
+                    System.out.println("Please enter the product ID: ");
+                    productID = scanner.nextInt();
+                    scanner.nextLine(); // Consume the newline character
+                    validProductID = true;
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a valid number for the product ID.");
+                    scanner.nextLine(); // Clear the invalid input
+                }
+            }
+
             System.out.println("Please enter your review: ");
             String review = scanner.nextLine();
             if (productID < 0 || productID >= allProducts.size() || !allProducts.contains(allProducts.get(productID))) {
                 System.out.println("Product not found");
-            } else if (!customer.getCart().contains(allProducts.get(productID))) {
+            } else if (!customer.getCart().contains(allProducts.get(productID)) || checkForPayment.equals("Payment not done successfully")) {
                 System.out.println("You can't review a product you didn't buy");
             } else {
                 allProducts.get(productID).setReviews(review);
                 System.out.println("Review added successfully");
             }
-            System.out.println("If you want to add another review, choose 1 or 0 to exit");
-            choice = scanner.nextInt();
-            scanner.nextLine();
+
+            validChoice = false;
+            while (!validChoice) {
+                try {
+                    System.out.println("If you want to add another review, choose 1 or 0 to exit");
+                    choice = scanner.nextInt();
+                    scanner.nextLine(); // Consume the newline character
+                    validChoice = true;
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a valid number (1 or 0).");
+                    scanner.nextLine(); // Clear the invalid input
+                }
+            }
         }
         customer.clearCart();
     }
@@ -164,13 +255,24 @@ public class Orders_mangments implements Serializable {
     public void updateProductInformation(Scanner scanner, int productID, Saller saller) {
         Products product = allProducts.get(productID);
         if (product.getSaller() == saller && saller.getProductsList().contains(product)) {
-            System.out.println("Please choose what you want to update: ");
-            System.out.println("1- Product Name");
-            System.out.println("2- Product Description");
-            System.out.println("3- Product Price");
-            System.out.println("4- Product Quantity");
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            int choice = 0;
+            boolean validChoice = false;
+            while (!validChoice) {
+                try {
+                    System.out.println("Please choose what you want to update: ");
+                    System.out.println("1- Product Name");
+                    System.out.println("2- Product Description");
+                    System.out.println("3- Product Price");
+                    System.out.println("4- Product Quantity");
+                    choice = scanner.nextInt();
+                    scanner.nextLine(); // Consume the newline character
+                    validChoice = true;
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a valid number (1-4).");
+                    scanner.nextLine(); // Clear the invalid input
+                }
+            }
+
             switch (choice) {
                 case 1:
                     System.out.println("Please enter the new product name: ");
@@ -183,15 +285,35 @@ public class Orders_mangments implements Serializable {
                     product.setProductDescription(productDescription);
                     break;
                 case 3:
-                    System.out.println("Please enter the new product price: ");
-                    double productPrice = scanner.nextDouble();
-                    scanner.nextLine();
+                    double productPrice = 0;
+                    boolean validPrice = false;
+                    while (!validPrice) {
+                        try {
+                            System.out.println("Please enter the new product price: ");
+                            productPrice = scanner.nextDouble();
+                            scanner.nextLine(); // Consume the newline character
+                            validPrice = true;
+                        } catch (InputMismatchException e) {
+                            System.out.println("Invalid input. Please enter a valid number for the product price.");
+                            scanner.nextLine(); // Clear the invalid input
+                        }
+                    }
                     product.setProductPrice(productPrice);
                     break;
                 case 4:
-                    System.out.println("Please enter the new product quantity: ");
-                    int productQuantity = scanner.nextInt();
-                    scanner.nextLine();
+                    int productQuantity = 0;
+                    boolean validQuantity = false;
+                    while (!validQuantity) {
+                        try {
+                            System.out.println("Please enter the new product quantity: ");
+                            productQuantity = scanner.nextInt();
+                            scanner.nextLine(); // Consume the newline character
+                            validQuantity = true;
+                        } catch (InputMismatchException e) {
+                            System.out.println("Invalid input. Please enter a valid number for the product quantity.");
+                            scanner.nextLine(); // Clear the invalid input
+                        }
+                    }
                     product.setProductQuantity(productQuantity);
                     break;
                 default:

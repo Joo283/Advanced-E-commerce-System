@@ -1,8 +1,24 @@
+import org.jetbrains.annotations.NotNull;
+
 import java.io.*;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
+
+    // Helper method to get valid integer input
+    public static int getValidIntInput(Scanner scanner, String prompt) {
+        while (true) {
+            try {
+                System.out.print(prompt);
+                return scanner.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine(); // Clear the invalid input
+            }
+        }
+    }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -23,7 +39,7 @@ public class Main {
             System.out.println("Enter 1 to sign in:");
             System.out.println("Enter 2 to sign up:");
             System.out.println("Enter 3 to exit:");
-            int choice = scanner.nextInt();
+            int choice = getValidIntInput(scanner, "");
             scanner.nextLine();
 
             switch (choice) {
@@ -31,7 +47,8 @@ public class Main {
                     // Sign-in logic
                     System.out.println("Enter 1 to sign in as customer:");
                     System.out.println("Enter 2 to sign in as seller:");
-                    int choice1 = scanner.nextInt();
+                    System.out.println("Enter 3 to exit:");
+                    int choice1 = getValidIntInput(scanner, "");
                     scanner.nextLine();
 
                     switch (choice1) {
@@ -72,7 +89,7 @@ public class Main {
                                     System.out.println("5 - to view the cart");
                                     System.out.println("6 - to checkout");
                                     System.out.println("7 - to exit");
-                                    int choice3 = scanner.nextInt();
+                                    int choice3 = getValidIntInput(scanner, "");
                                     scanner.nextLine();
 
                                     switch (choice3) {
@@ -81,7 +98,7 @@ public class Main {
                                             break;
                                         case 2:
                                             System.out.print("Enter the product ID: ");
-                                            int productID = scanner.nextInt();
+                                            int productID = getValidIntInput(scanner, "");
                                             scanner.nextLine();
                                             if (productID >= orders_mangments.allProducts.size()) {
                                                 System.out.println("Product not found.");
@@ -91,13 +108,13 @@ public class Main {
                                             break;
                                         case 3:
                                             System.out.print("Enter the product ID: ");
-                                            productID = scanner.nextInt();
+                                            productID = getValidIntInput(scanner, "");
                                             if (productID >= orders_mangments.allProducts.size()) {
                                                 System.out.println("Product not found.");
                                                 break;
                                             }
                                             System.out.print("Enter the quantity: ");
-                                            int quantity = scanner.nextInt();
+                                            int quantity = getValidIntInput(scanner, "");
                                             scanner.nextLine();
                                             if (premium) {
                                                 premiumCustomers.get(index).addToCart(orders_mangments.allProducts.get(productID), quantity);
@@ -107,7 +124,7 @@ public class Main {
                                             break;
                                         case 4:
                                             System.out.print("Enter the product ID: ");
-                                            productID = scanner.nextInt();
+                                            productID = getValidIntInput(scanner, "");
                                             if (productID >= orders_mangments.allProducts.size()) {
                                                 System.out.println("Product not found.");
                                                 break;
@@ -169,7 +186,7 @@ public class Main {
                                     System.out.println("5 - to update a product information");
                                     System.out.println("6 - to view product reviews");
                                     System.out.println("7 - to exit");
-                                    int choice4 = scanner.nextInt();
+                                    int choice4 = getValidIntInput(scanner, "");
                                     scanner.nextLine();
 
                                     switch (choice4) {
@@ -187,19 +204,19 @@ public class Main {
                                             break;
                                         case 4:
                                             System.out.println("Enter the product ID: ");
-                                            int productID = scanner.nextInt();
+                                            int productID = getValidIntInput(scanner, "");
                                             scanner.nextLine();
                                             orders_mangments.removeProduct(productID, sellersList.get(index));
                                             break;
                                         case 5:
                                             System.out.println("Enter the product ID: ");
-                                            productID = scanner.nextInt();
+                                            productID = getValidIntInput(scanner, "");
                                             scanner.nextLine();
                                             orders_mangments.updateProductInformation(new Scanner(System.in), productID, sellersList.get(index));
                                             break;
                                         case 6:
                                             System.out.println("Enter the product ID: ");
-                                            productID = scanner.nextInt();
+                                            productID = getValidIntInput(scanner, "");
                                             scanner.nextLine();
                                             orders_mangments.showProductReviewsForSeller(productID, sellersList.get(index));
                                             break;
@@ -215,6 +232,8 @@ public class Main {
                                 System.out.println("You are not a registered seller.");
                             }
                             break;
+                        case 3:
+                            break;
                         default:
                             System.out.println("Invalid choice. Please try again.");
                             break;
@@ -226,7 +245,8 @@ public class Main {
                     System.out.println("Enter 1 to sign up as a premium user:");
                     System.out.println("Enter 2 to sign up as a normal user:");
                     System.out.println("Enter 3 to sign up as a seller:");
-                    int choice2 = scanner.nextInt();
+                    System.out.println("Enter 4 to exit:");
+                    int choice2 = getValidIntInput(scanner, "");
                     scanner.nextLine();
 
                     switch (choice2) {
@@ -247,6 +267,8 @@ public class Main {
                             seller.setNewSeller(new Scanner(System.in));
                             sellersList.add(seller);
                             saveData("sellersList.sep", sellersList);
+                            break;
+                        case 4:
                             break;
                         default:
                             System.out.println("Invalid choice. Please try again.");
@@ -276,7 +298,7 @@ public class Main {
     }
 
     // Method to search for a normal customer
-    public static int searchForNormalCustomer(String email, String password, ArrayList<normalCustomer> normalCustomers) {
+    public static int searchForNormalCustomer(String email, String password, @NotNull ArrayList<normalCustomer> normalCustomers) {
         for (int i = 0; i < normalCustomers.size(); i++) {
             if (normalCustomers.get(i).getEmail().equals(email) && normalCustomers.get(i).getPassword().equals(password)) {
                 return i;
@@ -286,7 +308,7 @@ public class Main {
     }
 
     // Method to search for a premium customer
-    public static int searchForPremiumCustomer(String email, String password, ArrayList<Premium_Customer> premiumCustomers) {
+    public static int searchForPremiumCustomer(String email, String password, @NotNull ArrayList<Premium_Customer> premiumCustomers) {
         for (int i = 0; i < premiumCustomers.size(); i++) {
             if (premiumCustomers.get(i).getEmail().equals(email) && premiumCustomers.get(i).getPassword().equals(password)) {
                 return i;
@@ -296,7 +318,7 @@ public class Main {
     }
 
     // Method to search for a seller
-    public static int searchForSeller(String email, String password, ArrayList<Saller> sellersList) {
+    public static int searchForSeller(String email, String password, @NotNull ArrayList<Saller> sellersList) {
         for (int i = 0; i < sellersList.size(); i++) {
             if (sellersList.get(i).getEmail().equals(email) && sellersList.get(i).getPassword().equals(password)) {
                 return i;
